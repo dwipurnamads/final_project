@@ -1,4 +1,3 @@
-%%writefile streamlit_app.py
 import streamlit as st
 import joblib
 import numpy as np
@@ -57,30 +56,19 @@ def user_input_features():
 
 input_df = user_input_features()
 
-# Display the input features so user can confirm
+# Display the input features
 st.subheader('User Input Features')
 st.write(input_df)
 
+# Scale the input features
+# Ensure the order of columns matches the training data used for the scaler
+input_df = input_df[['song_duration_ms', 'acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 'speechiness', 'tempo', 'time_signature', 'audio_valence']]
+scaled_input = scaler.transform(input_df)
 
-# Create the prediction button
+
+# Make prediction
 if st.sidebar.button('Predict Popularity'):
-    # --- SEMUA LOGIKA PREDIKSI PINDAH KE SINI ---
-
-    # 1. Pastikan urutan kolom sudah benar (ini sudah praktik yang baik!)
-    # Meskipun DataFrame sudah dibuat dengan urutan yang benar, 
-    # langkah ini adalah pengaman tambahan.
-    feature_order = ['song_duration_ms', 'acousticness', 'danceability', 'energy', 
-                     'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 
-                     'speechiness', 'tempo', 'time_signature', 'audio_valence']
-    input_df_ordered = input_df[feature_order]
-
-    # 2. Scale the input features
-    scaled_input = scaler.transform(input_df_ordered)
-
-    # 3. Make prediction
     prediction = model.predict(scaled_input)
-    
-    # 4. Display the result
     st.subheader('Predicted Song Popularity')
     # Assuming popularity is on a scale of 0-100
-    st.write(f"The predicted popularity score is: **{prediction[0]:.2f}**")
+    st.write(f"{prediction[0]:.2f}")
