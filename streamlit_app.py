@@ -3,19 +3,13 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# Load the trained model, scaler, and pca from the single pickle file
+# Load the trained model and scaler
 try:
-    loaded_objects = joblib.load('model_scaler_pca.pkl')
-    model = loaded_objects['model']
-    scaler = loaded_objects['scaler']
-    pca = loaded_objects['pca']
-    feature_names = loaded_objects['feature_names']
-    st.success("Model, scaler, and PCA loaded successfully!")
+    model = joblib.load('best_svr_model_streamlit.pkl')
+    scaler = joblib.load('scaler_streamlit.pkl')
+    st.success("Model and scaler loaded successfully!")
 except FileNotFoundError:
-    st.error("Error: 'model_scaler_pca.pkl' not found. Please make sure the file is in the same directory.")
-    st.stop()
-except KeyError:
-    st.error("Error: 'model_scaler_pca.pkl' does not contain expected objects. Please check the file content.")
+    st.error("Error: Model or scaler file not found. Please make sure 'best_svr_model_streamlit.pkl' and 'scaler_streamlit.pkl' are in the same directory.")
     st.stop()
 
 
@@ -62,22 +56,19 @@ def user_input_features():
 
 input_df = user_input_features()
 
-# Ensure the order of columns matches the training data and convert to numpy array
-input_data = input_df[feature_names].values
-
 # Display the input features
 st.subheader('User Input Features')
 st.write(input_df)
 
 # Scale the input features
-scaled_input = scaler.transform(input_data)
+# Ensure the order of columns matches the training data used for the scaler
+input_df = input_df[['song_duration_ms', 'acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 'speechiness', 'tempo', 'time_signature', 'audio_valence']]
+scaled_input = scaler.transform(input_df)
 
-# Apply PCA transformation
-pca_input = pca.transform(scaled_input)
 
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
-    prediction = model.predict(pca_input)
+    prediction = model.predict(scaled_input)
     st.subheader('Predicted Song Popularity')
     # Assuming popularity is on a scale of 0-100
     st.write(f"{prediction[0]:.2f}")
