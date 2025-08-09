@@ -1,3 +1,4 @@
+%%writefile streamlit_app.py
 import streamlit as st
 import joblib
 import numpy as np
@@ -60,14 +61,15 @@ def user_input_features():
 
 input_df = user_input_features()
 
+# Define the feature columns explicitly based on the training data
+feature_cols = ['song_duration_ms', 'acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 'speechiness', 'tempo', 'time_signature', 'audio_valence']
+
 # Display the input features
 st.subheader('User Input Features')
-st.write(input_df)
+st.write(input_df[feature_cols])
 
 # Scale the input features
-# Ensure the order of columns matches the training data used for the scaler
-input_df = input_df[['song_duration_ms', 'acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 'speechiness', 'tempo', 'time_signature', 'audio_valence']]
-scaled_input = scaler.transform(input_df)
+scaled_input = scaler.transform(input_df[feature_cols])
 
 
 # Make prediction
