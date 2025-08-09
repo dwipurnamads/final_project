@@ -3,13 +3,17 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# Load the trained model and scaler
+# Load the trained model and scaler from the single pickle file
 try:
-    model = joblib.load('best_svr_model_streamlit.pkl')
-    scaler = joblib.load('scaler_streamlit.pkl')
+    loaded_objects = joblib.load('model_and_scaler.pkl')
+    model = loaded_objects['model']
+    scaler = loaded_objects['scaler']
     st.success("Model and scaler loaded successfully!")
 except FileNotFoundError:
-    st.error("Error: Model or scaler file not found. Please make sure 'best_svr_model_streamlit.pkl' and 'scaler_streamlit.pkl' are in the same directory.")
+    st.error("Error: 'model_and_scaler.pkl' not found. Please make sure the file is in the same directory.")
+    st.stop()
+except KeyError:
+    st.error("Error: 'model_and_scaler.pkl' does not contain expected objects. Please check the file content.")
     st.stop()
 
 
