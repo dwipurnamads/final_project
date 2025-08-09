@@ -5,17 +5,17 @@ import pandas as pd
 
 # Load the trained model, scaler, and pca from the single pickle file
 try:
-    loaded_objects = joblib.load('model_scaler_pca1.pkl')
+    loaded_objects = joblib.load('model_scaler_pca2.pkl')
     model = loaded_objects['model']
     scaler = loaded_objects['scaler']
     pca = loaded_objects['pca']
     feature_names = loaded_objects['feature_names']
     st.success("Model, scaler, and PCA loaded successfully!")
 except FileNotFoundError:
-    st.error("Error: 'model_scaler_pca1.pkl' not found. Please make sure the file is in the same directory.")
+    st.error("Error: 'model_scaler_pca2.pkl' not found. Please make sure the file is in the same directory.")
     st.stop()
 except KeyError:
-    st.error("Error: 'model_scaler_pca1.pkl' does not contain expected objects. Please check the file content.")
+    st.error("Error: 'model_scaler_pca2.pkl' does not contain expected objects. Please check the file content.")
     st.stop()
 
 
