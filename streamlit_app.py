@@ -74,6 +74,7 @@ st.write(input_df)
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
     try:
+        st.write(f"Shape of input data before scaling: {input_data.shape}") # Add this line to check shape
         # Scale the input features
         scaled_input = scaler.transform(input_data)
 
