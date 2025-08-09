@@ -5,17 +5,17 @@ import pandas as pd
 
 # Load the trained model, scaler, and pca from the single pickle file
 try:
-    loaded_objects = joblib.load('model_scaler_pca2.pkl')
+    loaded_objects = joblib.load('model_pipeline.pkl')
     model = loaded_objects['model']
     scaler = loaded_objects['scaler']
     pca = loaded_objects['pca']
     feature_names = loaded_objects['feature_names']
     st.success("Model, scaler, and PCA loaded successfully!")
 except FileNotFoundError:
-    st.error("Error: 'model_scaler_pca2.pkl' not found. Please make sure the file is in the same directory.")
+    st.error("Error: 'model_pipeline.pkl' not found. Please make sure the file is in the same directory.")
     st.stop()
 except KeyError:
-    st.error("Error: 'model_scaler_pca2.pkl' does not contain expected objects. Please check the file content.")
+    st.error("Error: 'model_pipeline.pkl' does not contain expected objects. Please check the file content.")
     st.stop()
 
 
@@ -74,7 +74,6 @@ st.write(input_df)
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
     try:
-        st.write(f"Shape of input data before scaling: {input_data.shape}") # Add this line to check shape
         # Scale the input features
         scaled_input = scaler.transform(input_data)
 
