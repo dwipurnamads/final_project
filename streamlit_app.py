@@ -3,14 +3,13 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# Load the trained model, scaler, and pca from the single pickle file
+# Load the trained model and preprocessing pipeline from the pickle file
 try:
     loaded_objects = joblib.load('model_pipeline.pkl')
     model = loaded_objects['model']
-    scaler = loaded_objects['scaler']
-    pca = loaded_objects['pca']
+    pipeline = loaded_objects['pipeline'] # Load the pipeline
     feature_names = loaded_objects['feature_names']
-    st.success("Model, scaler, and PCA loaded successfully!")
+    st.success("Model and preprocessing pipeline loaded successfully!")
 except FileNotFoundError:
     st.error("Error: 'model_pipeline.pkl' not found. Please make sure the file is in the same directory.")
     st.stop()
@@ -74,13 +73,10 @@ st.write(input_df)
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
     try:
-        # Scale the input features
-        scaled_input = scaler.transform(input_data)
+        # Apply the preprocessing pipeline (scaling and PCA) to the input data
+        processed_input = pipeline.transform(input_data)
 
-        # Apply PCA transformation
-        pca_input = pca.transform(scaled_input)
-
-        prediction = model.predict(pca_input)
+        prediction = model.predict(processed_input)
         st.subheader('Predicted Song Popularity')
         # Assuming popularity is on a scale of 0-100
         st.write(f"{prediction[0]:.2f}")
