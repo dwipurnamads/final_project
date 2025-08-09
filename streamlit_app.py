@@ -71,15 +71,18 @@ input_data = input_df.reindex(columns=feature_names).values
 st.subheader('User Input Features')
 st.write(input_df)
 
-# Scale the input features
-scaled_input = scaler.transform(input_data)
-
-# Apply PCA transformation
-pca_input = pca.transform(scaled_input)
-
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
-    prediction = model.predict(pca_input)
-    st.subheader('Predicted Song Popularity')
-    # Assuming popularity is on a scale of 0-100
-    st.write(f"{prediction[0]:.2f}")
+    try:
+        # Scale the input features
+        scaled_input = scaler.transform(input_data)
+
+        # Apply PCA transformation
+        pca_input = pca.transform(scaled_input)
+
+        prediction = model.predict(pca_input)
+        st.subheader('Predicted Song Popularity')
+        # Assuming popularity is on a scale of 0-100
+        st.write(f"{prediction[0]:.2f}")
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
