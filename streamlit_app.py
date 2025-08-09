@@ -3,12 +3,14 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# Load the trained model and scaler from the single pickle file
+# Load the trained model, scaler, and pca from the single pickle file
 try:
     loaded_objects = joblib.load('model_scaler_pca.pkl')
     model = loaded_objects['model']
     scaler = loaded_objects['scaler']
-    st.success("Model and scaler loaded successfully!")
+    pca = loaded_objects['pca']
+    feature_names = loaded_objects['feature_names']
+    st.success("Model, scaler, and PCA loaded successfully!")
 except FileNotFoundError:
     st.error("Error: 'model_scaler_pca.pkl' not found. Please make sure the file is in the same directory.")
     st.stop()
@@ -60,20 +62,22 @@ def user_input_features():
 
 input_df = user_input_features()
 
-# Define the feature columns explicitly based on the training data
-feature_cols = ['song_duration_ms', 'acousticness', 'danceability', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'audio_mode', 'speechiness', 'tempo', 'time_signature', 'audio_valence']
+# Ensure the order of columns matches the training data and convert to numpy array
+input_data = input_df[feature_names].values
 
 # Display the input features
 st.subheader('User Input Features')
-st.write(input_df[feature_cols])
+st.write(input_df)
 
 # Scale the input features
-scaled_input = scaler.transform(input_df[feature_cols])
+scaled_input = scaler.transform(input_data)
 
+# Apply PCA transformation
+pca_input = pca.transform(scaled_input)
 
 # Make prediction
 if st.sidebar.button('Predict Popularity'):
-    prediction = model.predict(scaled_input)
+    prediction = model.predict(pca_input)
     st.subheader('Predicted Song Popularity')
     # Assuming popularity is on a scale of 0-100
     st.write(f"{prediction[0]:.2f}")
